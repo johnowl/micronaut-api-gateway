@@ -11,7 +11,7 @@ import io.micronaut.http.filter.ServerFilterPhase
 import org.reactivestreams.Publisher
 
 @Filter("/**")
-class OwlGatewayEmptyFilter(
+class OwlGatewayRouteFilterAgain(
     private val config: OwlGatewayConfiguration
 ) : OncePerRequestHttpServerFilter() {
 
