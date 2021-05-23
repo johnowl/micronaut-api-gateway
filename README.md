@@ -1,12 +1,29 @@
-## Micronaut 2.5.4 Documentation
+## How to mutate the request
 
-- [User Guide](https://docs.micronaut.io/2.5.4/guide/index.html)
-- [API Reference](https://docs.micronaut.io/2.5.4/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/2.5.4/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
----
+1. create a filter that return a new request
+2. repeat the filter
+3. do what you want with the new request
 
-## Feature http-client documentation
+This is possible because this
 
-- [Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
+```java
+return (Publisher<MutableHttpResponse<?>>) httpFilter.doFilter(requestReference.getAndSet(request), this);
+```
 
+To be more specific, this part:
+
+```java
+requestReference.getAndSet(request)
+```
+
+If the request should be immutable, why are they saving the request?
+
+To turn the request mutable, this would work:
+
+```java
+requestReference.set(request)
+return (Publisher<MutableHttpResponse<?>>) httpFilter.doFilter(requestReference.get(request), this);
+```
+
+I opened this PR https://github.com/micronaut-projects/micronaut-core/pull/5487/files before knowing that requests 
+are immutable, only the attributes are mutable.
